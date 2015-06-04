@@ -17,6 +17,7 @@ set.seed(126)
 
 rep(ref,10)
 
+#poisson distribution
 genome <- setClass("genome", representation(genes = "matrix"), prototype = list(genes = (matrix(rep(ref, 1000)))))
 num <- 1000*genegen(15)
 genes <- new("genome", genes = matrix(rep(0, num), rep(1, 1000-num)))
@@ -24,14 +25,23 @@ genes <- new("genome", genes = matrix(rep(0, num), rep(1, 1000-num)))
 
 
 #function returns genome
-genegen <- function(af){
-  hap1=rbinom(1000,1,af)
-  hap2=rbinom(1000,1,af)
+genegen <- function(samples, af){
+  hap1=rbinom(samples,1,af)
+  hap2=rbinom(samples,1,af)
   gene = hap1+hap2
   return(gene)
 }
 
-genegen(0.4)
+samp_size = 100000
+prop = 0.2
+sims <- genegen(samp_size, prop)
+
+#generate allele proportions
+sim_prop <- table(sims)/samp_size
+names(sim_prop)
+sim_prop[1]
+
+
 
 
 
