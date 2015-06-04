@@ -15,15 +15,24 @@ m2 <- new("marker", i = alt, j = alt)
 #set seed
 set.seed(126)
 
-#function returns percentage of case
-genegen <- function(prob){
-  return(mean(rpois(100, prob)))
-}
+rep(ref,10)
 
-genegen(5)
-
-genome <- setClass("genome", representation(genes = "matrix"))
+genome <- setClass("genome", representation(genes = "matrix"), prototype = list(genes = (matrix(rep(ref, 1000)))))
 num <- 1000*genegen(15)
 genes <- new("genome", genes = matrix(rep(0, num), rep(1, 1000-num)))
+
+
+
+#function returns genome
+genegen <- function(af){
+  hap1=rbinom(1000,1,af)
+  hap2=rbinom(1000,1,af)
+  gene = hap1+hap2
+  return(gene)
+}
+
+genegen(0.4)
+
+
 
 
