@@ -24,7 +24,8 @@ genes <- new("genome", genes = matrix(rep(0, num), rep(1, 1000-num)))
 
 
 
-#function returns genome
+#function returns a simulated marker
+#takes in number of samples and allele frequency
 genegen <- function(samples, af){
   hap1=rbinom(samples,1,af)
   hap2=rbinom(samples,1,af)
@@ -39,8 +40,18 @@ sims <- genegen(samp_size, prop)
 #generate allele proportions
 sim_prop <- table(sims)/samp_size
 names(sim_prop)
-sim_prop[1]
+sim_prop["1"]
+odds <- sim_prop/sim_prop["0"]
 
+alph = 5e-5
+
+#funcition that generates probability of a phenotype to occur
+#takes in aray of marker samples, alph, beta
+phenprob <- function(alpha, beta, marker){
+  return exp(alpha+beta*marker)/(1-exp(alpha+beta*marker))
+}
+
+if(marker == 0) 
 
 
 
