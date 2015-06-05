@@ -27,10 +27,17 @@ phenprob <- function(alpha, beta, marker){
   return(exp(alpha+beta*marker)/(1+exp(alpha+beta*marker)))
 }
 
+#generate conditional probability of illness given marker
 marker_types = c(0, 1, 2)
+logit_prob <- phenprob(alph, odds, marker_types)
 
-phenprob(alph, odds, marker_types)
+sim_phen <- c(
+rbinom(table(sims)[1], 1, logit_prob[1]),
+rbinom(table(sims)[2], 1, logit_prob[2]),
+rbinom(table(sims)[3], 1, logit_prob[3]))
 
+sim_geno <- sort(sims)
 
+table(sim_phen, sim_geno)/samp_size
 
 
