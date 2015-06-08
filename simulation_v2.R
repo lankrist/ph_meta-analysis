@@ -6,15 +6,7 @@ al_freq = 0.2
 alpha = 2
 marker_types = c(0, 1, 2)
 
-#FUNCTION
-#Generates markers for a given sample size
-#takes in number of samples and allele frequency
-genegen <- function(samples, af){
-  hap1=rbinom(samples,1,af)
-  hap2=rbinom(samples,1,af)
-  gene = hap1+hap2
-  return(gene)
-}
+
 
 #already know the phenotype
 #control_num = number of non-infected( = 0)
@@ -22,21 +14,35 @@ genegen <- function(samples, af){
 simul_geno <- function(control, case, p, r){
   #d is prevalance of disease
   d = case/(control+case)
+  b = 1-d
   q = 1-p
+  
   
   prob_disease = d*(p^2) + 2*p*1*d*r + d*(r^2)*(q^2)
   
-  #prob_0 is prob that genotype is 0 given that diseased
-  prob_0 = (d*p^2)/prob_disease
-  #prob_1 is prob that genotype is 1 given that diseased
-  prob_1 = (2*p*q*d*r)/prob_disease
-  #prob_2 is prob that genotype is 2 given that diseased
-  prob_2 = ((q^2)*d*r^2)/prob_disease
+  #prob_d0 is prob that genotype is 0 given that diseased
+  prob_d0 = (d*p^2)/prob_disease
+  #prob_d1 is prob that genotype is 1 given that diseased
+  prob_d1 = (2*p*q*d*r)/prob_disease
+  #prob_d2 is prob that genotype is 2 given that diseased
+  prob_d2 = ((q^2)*d*r^2)/prob_disease
   
-  return(prob_0)
+  
+  prob_healthy = b*(p^2) + 2*p*1*b*r + b*(r^2)*(q^2)
+  
+  #prob_h0 is prob that genotype is 0 given that diseased
+  prob_h0 = (b*p^2)/prob_healthy
+  #prob_h1 is prob that genotype is 1 given that diseased
+  prob_h1 = (2*p*q*b*r)/prob_healthy
+  #prob_h2 is prob that genotype is 2 given that diseased
+  prob_h2 = ((q^2)*b*r^2)/prob_healthy
+  
+  genotype = c(prob_d0*case + prob_h0*control, prob_d1*case + prob_h1*control, prob_d2*case + prob_h2*control)  
+
+  return(genotype)  
 }
 
-simul_geno(100,100,.5,.1)
+simul_geno(5,5,.1,.1)
 
 
 
