@@ -1,21 +1,11 @@
 #meta-analysis simulation
 
 #VARIABLES
-samp_size = 100000
-al_freq = 0.2
-alpha = 2
-marker_types = c(0, 1, 2)
+control_samp = 1000
+case_samp = 100
+
 
 #FUNCTION
-#Generates markers for a given sample size
-#takes in number of samples and allele frequency
-genegen <- function(samples, af){
-  hap1=rbinom(samples,1,af)
-  hap2=rbinom(samples,1,af)
-  gene = hap1+hap2
-  return(gene)
-}
-
 #already know the phenotype
 #control_num = number of non-infected( = 0)
 #r is risk for allele
@@ -40,16 +30,9 @@ simul_geno(100,100,.5,.1)
 
 
 
-
-#Generates probability of a phenotype to occur in a certain marker
-#takes in array of marker samples, alph, beta
-phenprob <- function(alpha, beta, marker){
-  return(exp(alpha+beta*marker)/(1+exp(alpha+beta*marker)))
-}
-
 #SIMULATION
 #simulate genotypes
-sims <- genegen(samp_size, al_freq)
+sims <- simul_geno(100,100,.5,.1)
 
 #calculate allele proportions and odds ratio
 sim_prop <- table(sims)/samp_size
