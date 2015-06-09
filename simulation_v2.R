@@ -37,19 +37,19 @@ geno_prob <- function(control, case, p, r){
   prob_h2 = ((q^2)*(1-d*r^2))/prob_healthy
   
    
-  geno = c(case*prob_d0 + control*prob_h0, case*prob_d1 + control*prob_h1, case*prob_d2+control*prob_h2)
+  #geno = c(case*prob_d0 + control*prob_h0, case*prob_d1 + control*prob_h1, case*prob_d2+control*prob_h2)
   
-  return(geno)
+  #return(geno)
   #proportions of healthy
-  #healthy <- do(control)*sample(c(0,1,2), 1, prob=c(prob_h0, prob_h1, prob_h2))
+  healthy <- do(control)*sample(c(0,1,2), 1, prob=c(prob_h0, prob_h1, prob_h2))
   
-  #genotype = mapply(c, disease, healthy)  
+  genotype = mapply(c, disease, healthy)  
 
-  #return(genotype)  
+  return(genotype)  
 
 }
 
-geno_prob(100,100,.5,.1)
+#geno_prob(100,100,.5,.1)
 
 #SIMULATION
 #this portion should be written as function too
