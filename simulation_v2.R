@@ -1,6 +1,11 @@
 #meta-analysis simulation 2
 library(mosaic)
 
+#VARIABLES
+cosamp <- 1000
+casamp <- 1000
+
+
 #FUNCTION
 #Returns genotype proportions
 #control_num = number of non-infected( = 0)
@@ -20,7 +25,7 @@ geno_prob <- function(control, case, p, r){
   prob_d2 = ((q^2)*d*r^2)/prob_disease
   
   #proportions of disease
-  disease <- do(control)*sample(c(0,1,2), 1, prob=c(prob_d0, prob_d1, prob_d2))
+  disease <- do(case)*sample(c(0,1,2), 1, prob=c(prob_d0, prob_d1, prob_d2))
   
   prob_healthy = (p^2)*(1-d)+2*p*q*((1-d)*r)+(q^2)*((1-d)*r^2)
   
@@ -40,9 +45,11 @@ geno_prob <- function(control, case, p, r){
 }
 
 #SIMULATION
-gprob <- geno_prob(100,100, .5, .1)
-pprob <- c(rep(1, 100), rep(0, 100))
+#this portion should be written as function too
+gprob <- geno_prob(cosamp,casamp, .5, .1)
+pprob <- c(rep(1, cosamp), rep(0, casamp))
 geno <- data.frame(gprob, pprob)
+
 write.table(geno, 
             file = "/Users/kristine/Documents/Summer_2015/genomics/meta_analysis/ph_meta-analysis/sim_gene4.csv", 
             row.names = F, sep=",")
