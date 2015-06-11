@@ -90,7 +90,15 @@ allele_freq <- function(dat){
 allele_freq(samp)
 
 
-
+#Chi-Squared Test
+v <- NULL
+gprob <- geno_prob(cosamp,casamp, .5, .1)
+pprob <- c(rep(1, cosamp), rep(0, casamp))
+geno <- data.frame(sim_geno = gprob, sim_pheno = pprob)
+tbl <- table(geno)
+Xsq <- chisq.test(tbl)
+pval <- Xsq$p.value
+v <- c(v, pval)
 
 
 #CHI SQUARE TEST
