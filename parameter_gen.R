@@ -23,7 +23,13 @@ score_test <- function(vector){
 }
 
 score_test(sims)
-
 #sims <- data.frame(result = c(11, 15, 3, 7), sim_pheno = c(10, 12, 19, 4))
 #crossprod((sims[,1] - mean(sims[,1])), (sims[,2] - mean(sims[,2])))
+
+#ALLELE FREQUENCY COMPARISON
+
+
+#CHI SQUARE TEST
+
+
 
