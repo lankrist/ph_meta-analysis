@@ -2,9 +2,8 @@
 library(mosaic)
 
 #VARIABLES
-cosamp <- 1000
-casamp <- 1000
-
+cosamp <- 600
+casamp <- 400
 
 #FUNCTION
 #Returns genotype proportions
@@ -16,42 +15,40 @@ geno_prob <- function(control, case, p, r){
   q = 1-p
   
   prob_disease = d*(p^2) + 2*p*q*d*r + d*(r^2)*(q^2)
-  
   #prob_d0 is prob that genotype is 0 given that diseased
   prob_d0 = (d*p^2)/prob_disease
   #prob_d1 is prob that genotype is 1 given that diseased
   prob_d1 = (2*p*q*d*r)/prob_disease
   #prob_d2 is prob that genotype is 2 given that diseased
   prob_d2 = ((q^2)*d*r^2)/prob_disease
-  
   #proportions of disease
   disease <- do(case)*sample(c(0,1,2), 1, prob=c(prob_d0, prob_d1, prob_d2))
   
-  prob_healthy = (p^2)*(1-d)+2*p*q*((1-d)*r)+(q^2)*((1-d)*r^2)
-  
+  prob_healthy = (p^2)*(1-d)+2*p*q*(1-d*r)+(q^2)*(1-d*r^2)
   #prob_h0 is prob that genotype is 0 given that diseased
   prob_h0 = ((p^2)*(1-d))/prob_healthy
   #prob_h1 is prob that genotype is 1 given that diseased
-  prob_h1 = (2*p*q*((1-d)*r))/prob_healthy
+  prob_h1 = (2*p*q*(1-d*r))/prob_healthy
   #prob_h2 is prob that genotype is 2 given that diseased
-  prob_h2 = ((q^2)*((1-d)*r^2))/prob_healthy
-  
+  prob_h2 = ((q^2)*(1-d*r^2))/prob_healthy
   #proportions of healthy
   healthy <- do(control)*sample(c(0,1,2), 1, prob=c(prob_h0, prob_h1, prob_h2))
   
-  genotype = mapply(c, disease, healthy)  
-
+  #geno = c(case*prob_d0 + control*prob_h0, case*prob_d1 + control*prob_h1, case*prob_d2+control*prob_h2)
+  #return(geno)
+  genotype = mapply(c, disease, healthy)
   return(genotype)  
 }
+
 
 #SIMULATION
 #this portion should be written as function too
 gprob <- geno_prob(cosamp,casamp, .5, .1)
 pprob <- c(rep(1, cosamp), rep(0, casamp))
 geno <- data.frame(sim_geno = gprob, sim_pheno = pprob)
-head(geno)
+table(geno)
 
 write.table(geno, 
-            file = "/Users/kristine/Documents/Summer_2015/genomics/meta_analysis/ph_meta-analysis/sim_gene4.csv", 
+            file = "/Users/kristine/Documents/Summer_2015/genomics/meta_analysis/ph_meta-analysis/sim_gene.csv", 
             row.names = F, sep=",")
 
