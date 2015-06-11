@@ -55,7 +55,8 @@ geno_prob <- function(control, case, p, r){
 #this portion should be written as function too
 gprob <- geno_prob(cosamp,casamp, .5, .1)
 pprob <- c(rep(1, cosamp), rep(0, casamp))
-geno <- data.frame(gprob, pprob)
+geno <- data.frame(sim_geno = gprob, sim_pheno = pprob)
+head(geno)
 
 write.table(geno, 
             file = "/Users/kristine/Documents/Summer_2015/genomics/meta_analysis/ph_meta-analysis/sim_gene4.csv", 
