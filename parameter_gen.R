@@ -64,6 +64,18 @@ allele_freq <- function(dat){
 
 chi_sq <- function(v){
   chisq.test(table(v))$p.value
+  
+  if(chi_sq<0.05)
+  {
+  chi_sq=1
+  }
+else
+  {
+  chi_sq=0
+  }
+
+v <- c(v, chi_sq)
+
 }
 
 
