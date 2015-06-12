@@ -1,5 +1,4 @@
 #generate parameters
-<<<<<<< HEAD
 
 #load data
 sims <- read.csv("/Users/kristine/Documents/Summer_2015/genomics/meta_analysis/ph_meta-analysis/sim_gene1.csv", header = T)
@@ -15,7 +14,7 @@ lreg_beta <- lreg$coefficients
 lreg_err <- mean(lreg$residuals)
 #deviance
 lreg_deviance <- lreg$deviance
-=======
+
 install.packages("statmod")
 Rlibrary(statmod)
 
@@ -24,13 +23,15 @@ sims <- read.csv("/Users/kristine/Documents/Summer_2015/genomics/meta_analysis/p
 head(sims); table(sims)
 
 #LOGISTIC REGRESSION
-lreg <- glm(formula = sim_pheno ~ result, family = binomial(logit), data = sims)
-names(lreg);summary(lreg)
-
-#coefficients
-lreg_beta <- lreg$coefficients
-#std_err
-lreg_err <- summary(lreg)$coefficients[,2]
+log_reg <- function(v){
+  lreg <- glm(formula = v[,2] ~ v[,1], family = binomial(logit), data = v)
+  #coefficients
+  lreg_beta <- lreg$coefficients[2]
+  #std_err
+  lreg_err <- summary(lreg)$coefficients[,2][2]
+  return(c(lreg_beta, lreg_err))
+}
+log_reg(sims)
 
 #SCORE TEST
 score_test <- function(vector){
@@ -39,22 +40,11 @@ score_test <- function(vector){
   return(crossprod((vector[,1] - mean(vector[,1])), (vector[,2] - mean(vector[,2]))))
 }
 
-score_test(sims)
 #sims <- data.frame(result = c(11, 15, 3, 7), sim_pheno = c(10, 12, 19, 4))
 #crossprod((sims[,1] - mean(sims[,1])), (sims[,2] - mean(sims[,2])))
 
 #ALLELE FREQUENCY TEST
-
 #risk allele is q
-
-
-#create a 2 x 10 vector
-
-samp = data.frame(geno = c(0,1,2,0,1,1,0,2,1,0), pheno = c(0,0,1,0,0,0,0,1,0,0))
-
-geno_h0 = length((intersect(which(samp[ , 2] == 0), which(samp[,1] ==0))))
-geno_h1 = length((intersect(which(samp[ , 2] == 0), which(samp[,1] ==1))))
-
 #input vector that is 2 x n where n is the number of samples(controls+cases)
 allele_freq <- function(dat){
   
@@ -81,28 +71,19 @@ allele_freq <- function(dat){
   
   z = (risk_cases - risk_control)/stand_error
   
-  result = c(stand_error, z)
+  p = 2*pnorm(-abs(z))
+  
+  result = c(stand_error, p, z)
   
   return(result)
   
 }
 
-allele_freq(samp)
-
-
-#Chi-Squared Test
-v <- NULL
-gprob <- geno_prob(cosamp,casamp, .5, .1)
-pprob <- c(rep(1, cosamp), rep(0, casamp))
-geno <- data.frame(sim_geno = gprob, sim_pheno = pprob)
-tbl <- table(geno)
-Xsq <- chisq.test(tbl)
-pval <- Xsq$p.value
-v <- c(v, pval)
-
 
 #CHI SQUARE TEST
 
->>>>>>> a649cb5496c86d825ec2e3d115e92d38cf1211ac
+chi_sq <- function(v){
+  chisq.test(table(v))$p.value
+}
 
 
