@@ -23,9 +23,6 @@ score_test <- function(vector){
 }
 score_test(sims)
 
-#sims <- data.frame(result = c(11, 15, 3, 7), sim_pheno = c(10, 12, 19, 4))
-#crossprod((sims[,1] - mean(sims[,1])), (sims[,2] - mean(sims[,2])))
-
 #ALLELE FREQUENCY TEST
 #risk allele is q
 #input vector that is 2 x n where n is the number of samples(controls+cases)
@@ -64,7 +61,6 @@ allele_freq <- function(dat){
 
 
 #CHI SQUARE TEST
-
 chi_sq <- function(v){
   return(chisq.test(table(v))$p.value)
 }
