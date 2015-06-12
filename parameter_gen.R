@@ -21,7 +21,7 @@ score_test <- function(vector){
   p = 2*pnorm(-abs(score/variance))
   return(c(score/variance, sqrt(variance), p))
 }
-score_test(sims)
+
 
 #ALLELE FREQUENCY TEST
 #risk allele is q
