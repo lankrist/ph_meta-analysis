@@ -61,21 +61,20 @@ allele_freq <- function(dat){
 
 
 #CHI SQUARE TEST
-
-chi_sq <- function(v){
-  chisq.test(table(v))$p.value
+v = NULL
+for(count in 1:1000){
+  chi_sq <- function(v){
+    chisq.test(table(v))$p.value
+    }
   
-  if(chi_sq<0.05)
-  {
-  chi_sq=1
-  }
-else
-  {
-  chi_sq=0
-  }
+  if(chi_sq<0.05){
+    chi_sq=1
+    }
+  else{
+    chi_sq=0
+    }
 
-v <- c(v, chi_sq)
-
+  v <- c(v, chi_sq)
 }
 
 
