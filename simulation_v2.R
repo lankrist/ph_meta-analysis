@@ -45,7 +45,7 @@ geno_prob <- function(control, case, p, r){
 
 #put all the simulations together
 simulation <- function(control_samp, case_samp, dom_allele, risk_factor){
-  gprob <- geno_prob(cosamp,casamp, dom_allele, risk_factor)
+  gprob <- geno_prob(control_samp,case_samp, dom_allele, risk_factor)
   pprob <- c(rep(1, cosamp), rep(0, casamp))
   return(data.frame(sim_geno = gprob, sim_pheno = pprob))
 }

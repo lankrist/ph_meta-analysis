@@ -1,25 +1,23 @@
 #generate parameters
-#load data
-dat <- read.csv("/Users/kristine/Documents/Summer_2015/genomics/meta_analysis/ph_meta-analysis/sim_gene.csv", header = T)
-head(sims); table(sims)
-
 #LOGISTIC REGRESSION
 #returns log_reg beta_0, beta_1, log_reg error
 log_reg <- function(v){
   lreg <- glm(formula = v[,2] ~ v[,1], family = binomial(logit), data = v)
   #coefficients
-  lreg_beta <- lreg$coefficients
+  lreg_beta <- summary(lreg)$coefficients[,1][2]
   #std_err
   lreg_err <- summary(lreg)$coefficients[,2][2]
-  return(c(lreg_beta, lreg_err))
+  pVal <- summary(lreg)$coefficients[,4][2]
+  return(c(lreg_beta, lreg_err,pVal))
 }
 
 #SCORE TEST
 #returns z-score, standard error, p val
 score_test <- function(vector){
   score <- crossprod((vector[,1] - mean(vector[,1])), (vector[,2] - mean(vector[,2])))
-  variance <- var(vector[,2])*crossprod((vector[,1] - mean(vector[,1])), (vector[,1] - mean(vector[,1])))
-  p = 2*pnorm(-abs(score/variance))
+  StdErr <- sqrt(var(vector[,2])*crossprod((vector[,1] - mean(vector[,1])), 
+                                           (vector[,1] - mean(vector[,1]))))
+  p = 2*pnorm(-abs(score/StdErr))
   return(c(score/variance, sqrt(variance), p))
 }
 
@@ -33,21 +31,19 @@ samp_count <- function(v, geno, pheno){
 #input vector that is 2 x n where n is the number of samples(controls+cases)
 #returns standard error, p-value, z score
 allele_freq <- function(dat){
-  gentbl <- table(dat)
-  #number of healthy individuals with respective genotype
-  geno_h0 = gentbl[1,1]; geno_h1 = gentbl[2,1]; geno_h2 = gentbl[3,1]
-  #number of infected individuals with respective genotype
-  geno_d0 = gentbl[1,2]; geno_d1 = gentbl[2,2]; geno_d2 = gentbl[3,2]
+
+  Case=which(dat[,2]==1)
+  Ctrl=which(dat[,2]==0)
+  NCase=length(Case)
+  NCtrl=length(Ctrl)
   
-  tot_healthy = geno_h0+geno_h1+geno_h2
-  tot_infect = geno_d0+geno_d1+geno_d2
-  risk_control = (2*geno_h2+geno_h1)/(2*tot_healthy)
-  risk_cases = (2*geno_d2+geno_d1)/(2*tot_infect)
+  PCase=sum(dat[Case,1])/(2*NCase)
+  PCtrl=sum(dat[Ctrl,1])/(2*NCtrl)
   
-  stand_error = sqrt((risk_cases*(1-risk_cases) + risk_control*(1-risk_control)) / (2*(tot_healthy+tot_infect)) )
-  z = (risk_cases - risk_control)/stand_error
+  stand_error = sqrt(  (PCase*(1-PCase) + PCtrl*(1-PCtrl)) / (2*(NCase+NCtrl)) )
+  z = (PCase - PCtrl)/stand_error
   p = 2*pnorm(-abs(z))
-  result = c(stand_error, p, z)
+  result = c(stand_error, z,p)
   return(result)
 }
 
@@ -56,3 +52,7 @@ allele_freq <- function(dat){
 chi_sq <- function(v){
   return(chisq.test(table(v))$p.value)
 }
+
+
+
+
