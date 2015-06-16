@@ -19,7 +19,7 @@ cosamp <- 1000
 casamp <- 1000
 al_fr <- 0.2
 risk <- 1
-rounds <- 200
+rounds <- 1000
 
 
 
@@ -34,8 +34,8 @@ for (i in 1:rounds) {
   
   data=simulation(cosamp, casamp, al_fr, risk)
   
-   temp = log_reg(data)
-   pValLog=c(pValLog,PValInd(temp[3]))
+  temp = log_reg(data)
+  pValLog=c(pValLog,PValInd(temp[3]))
   
   temp = score_test(data)
   pValScore=c(pValScore,PValInd(temp[3]))
