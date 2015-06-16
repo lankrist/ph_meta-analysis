@@ -14,19 +14,13 @@ log_reg <- function(v){
 #SCORE TEST
 #returns z-score, standard error, p val
 score_test <- function(vector){
-  score <- crossprod((vector[,1] - mean(vector[,1])), (vector[,2] - mean(vector[,2])))
-  StdErr <- sqrt(var(vector[,2])*crossprod((vector[,1] - mean(vector[,1])), 
-                                           (vector[,1] - mean(vector[,1]))))
+  score <- crossprod( (vector[,1] - mean(vector[,1])), (vector[,2] - mean(vector[,2])) )
+  StdErr <- sqrt( crossprod( (vector[,2] - mean(vector[,2]))^2, (vector[,1] - mean(vector[,1]))^2 ) )
   p = 2*pnorm(-abs(score/StdErr))
-  return(c(score/variance, sqrt(variance), p))
+  return(c(score/StdErr, sqrt(StdErr), p))
 }
 
 #ALLELE FREQUENCY TEST
-#function that takes in matrix, genotype, phenotype and returns the number of samples
-samp_count <- function(v, geno, pheno){
-  length(intersect(which(v[,1] == geno)), which(v[ , 2] == pheno))
-}
-#actual function 
 #risk allele is q
 #input vector that is 2 x n where n is the number of samples(controls+cases)
 #returns standard error, p-value, z score
@@ -40,7 +34,8 @@ allele_freq <- function(dat){
   PCase=sum(dat[Case,1])/(2*NCase)
   PCtrl=sum(dat[Ctrl,1])/(2*NCtrl)
   
-  stand_error = sqrt(  (PCase*(1-PCase) + PCtrl*(1-PCtrl)) / (2*(NCase+NCtrl)) )
+  stand_error = sqrt(  (PCase*(1-PCase))/(2*NCase) + (PCtrl*(1-PCtrl))/(2*NCtrl) )
+  
   z = (PCase - PCtrl)/stand_error
   p = 2*pnorm(-abs(z))
   result = c(stand_error, z,p)

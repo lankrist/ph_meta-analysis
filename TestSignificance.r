@@ -19,7 +19,7 @@ cosamp <- 1000
 casamp <- 1000
 al_fr <- 0.2
 risk <- 1
-rounds <- 200
+rounds <- 1000
 
 pValLog=NULL
 pValScore=NULL
