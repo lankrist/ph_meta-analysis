@@ -13,6 +13,7 @@ Risk<-as.numeric(Args[4])
 Rounds <-as.numeric(Args[5])
 #cosamp, casamp, al_fr, risk, rounds
 
+
 #FUNCTION
 #Returns genotype proportions
 #control_num = number of non-infected( = 0)
@@ -30,17 +31,19 @@ geno_prob <- function(control, case, p, r){
   #prob_d2 is prob that genotype is 2 given that diseased
   prob_d2 = ((q^2)*d*r^2)/prob_disease
   #proportions of disease
-  disease <- sample(c(0,1,2), case, prob=c(prob_d0, prob_d1, prob_d2),replace=TRUE)
+  disease <- sample(c(0,1,2), case, replace=TRUE, prob=c(prob_d0, prob_d1, prob_d2))
   
-  prob_healthy = (p^2)*(1-d)+2*p*q*(1-d*r)+(q^2)*(1-d*r^2)
+
+  prob_healthy = (p^2)*(1-d)+(2*p*q*(1-d)*r)+((q^2)*(1-d)*r^2)
+  
   #prob_h0 is prob that genotype is 0 given that diseased
   prob_h0 = ((p^2)*(1-d))/prob_healthy
   #prob_h1 is prob that genotype is 1 given that diseased
-  prob_h1 = (2*p*q*(1-d*r))/prob_healthy
+  prob_h1 = (2*p*q*(1-d)*r)/prob_healthy
   #prob_h2 is prob that genotype is 2 given that diseased
-  prob_h2 = ((q^2)*(1-d*r^2))/prob_healthy
+  prob_h2 = ((q^2)*(1-d)*r^2)/prob_healthy
   #proportions of healthy
-  healthy <- sample(c(0,1,2), control, prob=c(prob_h0, prob_h1, prob_h2),replace=TRUE)
+  healthy <- sample(c(0,1,2), control,replace=TRUE, prob=c(prob_h0, prob_h1, prob_h2))
   
   genotype = c(disease, healthy)
   return(genotype)
@@ -115,8 +118,8 @@ powerReturn <- function(cosamp, casamp, al_fr, risk, rounds){
   pValChi=NULL
   pValProp=NULL
   
-  
   for (i in 1:rounds) {
+    
     data=simulation(cosamp, casamp, al_fr, risk)
     
     temp = log_reg(data)
@@ -130,11 +133,13 @@ powerReturn <- function(cosamp, casamp, al_fr, risk, rounds){
     
     temp = chi_sq(data)
     pValChi=c(pValChi,PValInd(temp[1]))
+    
   }
+  
   
   return(c(mean(pValLog), mean(pValScore), mean(pValProp), mean(pValChi)))
 }
 
 
-print(powerReturn(Cosamp,Casamp,Al_fr,Risk,Rounds))
+print(powerReturn(cosamp,casamp,al_fr,risk,rounds))
                                       
