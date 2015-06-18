@@ -5,30 +5,29 @@
 #Returns genotype proportions                                                                                                                                       
 #control_num = number of non-infected( = 0)                                                                                                                         
 #r is risk for allele; p is allele frequency                                                                                                                        
-geno_prob <- function(control, case, p, r){
-  #d is prevalance of disease                                                                                                                                       
-  d = case/(control+case)
+geno_prob <- function(control, case, p, r, d){
+  #d is prevalence of disease
   q = 1-p
   
-  prob_disease = d*(p^2) + 2*p*q*d*r + d*(r^2)*(q^2)
-  #prob_d0 is prob that genotype is 0 given that diseased                                                                                                           
-  prob_d0 = (d*p^2)/prob_disease
-  #prob_d1 is prob that genotype is 1 given that diseased                                                                                                           
-  prob_d1 = (2*p*q*d*r)/prob_disease
-  #prob_d2 is prob that genotype is 2 given that diseased                                                                                                           
-  prob_d2 = ((q^2)*d*r^2)/prob_disease
-  #proportions of disease                                                                                                                                           
+  prob_disease = (q^2)*d + (2*p*q)*d*r + (p^2)*d*(r^2)
+  #prob_d0 is prob that genotype is 0 given that diseased
+  prob_d0 = (q^2*d)/prob_disease
+  #prob_d1 is prob that genotype is 1 given that diseased
+  prob_d1 = (2*p*q)*d*r/prob_disease
+  #prob_d2 is prob that genotype is 2 given that diseased
+  prob_d2 = (p^2)*d*r^2/prob_disease
+  #proportions of disease
   disease <- sample(c(0,1,2), case, replace=TRUE, prob=c(prob_d0, prob_d1, prob_d2))
   
-  prob_healthy = (p^2)*(1-d)+(2*p*q*(1-d)*r)+((q^2)*(1-d)*r^2)
+  prob_healthy = (q^2)*(1-d)+(2*p*q*(1-d*r))+(p^2)*(1-d*r^2)
   
-  #prob_h0 is prob that genotype is 0 given that diseased                                                                                                           
-  prob_h0 = ((p^2)*(1-d))/prob_healthy
-  #prob_h1 is prob that genotype is 1 given that diseased                                                                                                           
-  prob_h1 = (2*p*q*(1-d)*r)/prob_healthy
-  #prob_h2 is prob that genotype is 2 given that diseased                                                                                                           
-  prob_h2 = ((q^2)*(1-d)*r^2)/prob_healthy
-  #proportions of healthy                                                                                                                                           
+  #prob_h0 is prob that genotype is 0 given that diseased
+  prob_h0 = (q^2)*(1-d)/prob_healthy
+  #prob_h1 is prob that genotype is 1 given that diseased
+  prob_h1 = 2*p*q*(1-d*r)/prob_healthy
+  #prob_h2 is prob that genotype is 2 given that diseased
+  prob_h2 = (p^2)*(1-d*r^2)/prob_healthy
+  #proportions of healthy
   healthy <- sample(c(0,1,2), control,replace=TRUE, prob=c(prob_h0, prob_h1, prob_h2))
   
   genotype = c(disease, healthy)
@@ -36,8 +35,8 @@ geno_prob <- function(control, case, p, r){
 }
 
 #put all the simulations together                                                                                                                                   
-simulation <- function(control_samp, case_samp, dom_allele, risk_factor){
-  gprob <- geno_prob(control_samp,case_samp, dom_allele, risk_factor)
+simulation <- function(control_samp, case_samp, dom_allele, risk_factor, diseaseFr){
+  gprob <- geno_prob(control_samp,case_samp, dom_allele, risk_factor, diseaseFr)
   pprob <- c(rep(1, control_samp), rep(0, case_samp))
   return(data.frame(sim_geno = gprob, sim_pheno = pprob))
 }
@@ -98,7 +97,7 @@ PValInd = function(x){
   else {return(0)}
 }
 
-powerReturn <- function(cosamp, casamp, al_fr, risk, rounds){
+powerReturn <- function(cosamp, casamp, al_fr, risk, rounds, disFr){
   pValLog=NULL
   pValScore=NULL
   pValChi=NULL
@@ -106,7 +105,7 @@ powerReturn <- function(cosamp, casamp, al_fr, risk, rounds){
   
   for (i in 1:rounds) {
     
-    data=simulation(cosamp, casamp, al_fr, risk)
+    data=simulation(cosamp, casamp, al_fr, risk, disFr)
     
     temp = log_reg(data)
     pValLog=c(pValLog,PValInd(temp[3]))
