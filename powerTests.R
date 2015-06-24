@@ -1,6 +1,5 @@
 #compiled version of Power Tests                                                                                                                                    
 
-
 #FUNCTION                                                                                                                                                           
 #Returns genotype proportions                                                                                                                                       
 #control_num = number of non-infected( = 0)                                                                                                                         
@@ -37,7 +36,7 @@ geno_prob <- function(control, case, p, r, d){
 #put all the simulations together                                                                                                                                   
 simulation <- function(control_samp, case_samp, dom_allele, risk_factor, diseaseFr){
   gprob <- geno_prob(control_samp,case_samp, dom_allele, risk_factor, diseaseFr)
-  pprob <- c(rep(1, control_samp), rep(0, case_samp))
+  pprob <- c(rep(1, case_samp), rep(0, control_samp))
   return(data.frame(sim_geno = gprob, sim_pheno = pprob))
 }
 
@@ -116,8 +115,8 @@ powerReturn <- function(cosamp, casamp, al_fr, risk, rounds, disFr){
     temp = allele_freq(data)
     pValProp=c(pValProp,PValInd(temp[3]))
     
-    temp = chi_sq(data)
-    pValChi=c(pValChi,PValInd(temp[1]))
+    #temp = chi_sq(data)
+    #pValChi=c(pValChi,PValInd(temp[1]))
     
   }
   
